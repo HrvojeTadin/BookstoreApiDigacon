@@ -84,7 +84,6 @@ namespace BookstoreSeeder
                 Console.WriteLine("Authors already exist, skipping");
             }
 
-            // 2) Žanrovi
             if (!await db.Genres.AnyAsync())
             {
                 db.Genres.AddRange(
@@ -100,10 +99,8 @@ namespace BookstoreSeeder
                 Console.WriteLine("Genres already exist, skipping");
             }
 
-            // 3) Knjige + recenzije
             if (!await db.Books.AnyAsync())
             {
-                // dohvatimo autore i žanrove iz baze
                 var orwell = await db.Authors.SingleAsync(a => a.Name == "George Orwell");
                 var dystopia = await db.Genres.SingleAsync(g => g.Name == "Dystopia");
                 var austen = await db.Authors.SingleAsync(a => a.Name == "Jane Austen");
@@ -111,7 +108,6 @@ namespace BookstoreSeeder
                 var dostoevsky = await db.Authors.SingleAsync(a => a.Name == "Fyodor Dostoevsky");
                 var philosophical = await db.Genres.SingleAsync(g => g.Name == "Philosophical Fiction");
 
-                // 1984
                 var b1 = new Book("1984", 9.99m);
                 b1.Authors.Add(orwell);
                 b1.Genres.Add(dystopia);
@@ -120,7 +116,6 @@ namespace BookstoreSeeder
                 db.Books.Add(b1);
                 Console.WriteLine("Book '1984' seeded with reviews");
 
-                // Pride and Prejudice
                 var b2 = new Book("Pride and Prejudice", 12.50m);
                 b2.Authors.Add(austen);
                 b2.Genres.Add(romance);
@@ -128,7 +123,6 @@ namespace BookstoreSeeder
                 db.Books.Add(b2);
                 Console.WriteLine("Book 'Pride and Prejudice' seeded with review");
 
-                // Crime and Punishment
                 var b3 = new Book("Crime and Punishment", 14.99m);
                 b3.Authors.Add(dostoevsky);
                 b3.Genres.Add(philosophical);
@@ -136,7 +130,6 @@ namespace BookstoreSeeder
                 db.Books.Add(b3);
                 Console.WriteLine("Book 'Crime and Punishment' seeded with review");
 
-                // spremi sve dodane knjige/reviews
                 await db.SaveChangesAsync();
             }
             else

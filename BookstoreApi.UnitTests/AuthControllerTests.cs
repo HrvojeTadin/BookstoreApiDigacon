@@ -4,7 +4,6 @@ public class AuthControllerTests
 {
     private static AuthController CreateController()
     {
-        // 1) pripremi JwtSettings
         var jwt = new JwtSettings
         {
             Key = "DugaLozinkaKakoBiSeOsjecaliStoJeMoguceViseSigurnije!",
@@ -12,9 +11,8 @@ public class AuthControllerTests
             Audience = "BookstoreClient",
             DurationInMinutes = 60
         };
-        // 2) wrpa u IOptions
+
         var options = Options.Create(jwt);
-        // 3) napravi controller
         return new AuthController(options);
     }
 
@@ -26,7 +24,6 @@ public class AuthControllerTests
 
         var result = ctrl.Login(req);
 
-        // provjeri da je OkObjectResult
         var ok = Assert.IsType<OkObjectResult>(result);
         var json = JsonSerializer.Serialize(ok.Value);
         Assert.Contains("Token", json);

@@ -1,8 +1,5 @@
 ﻿namespace BookstoreApi.IntegrationTests;
 
-/// <summary>
-/// Test handler: svaki zahtjev autentificira kao korisnik s rolama Read i ReadWrite
-/// </summary>
 public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
     public TestAuthHandler(

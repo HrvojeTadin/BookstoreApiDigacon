@@ -12,7 +12,6 @@ public static class DependencyInjection
 
     public static WebApplicationBuilder AddBookstoreServices(this WebApplicationBuilder builder)
     {
-        // BookstoreService, IThirdPartyBookClient…
         builder.Services.AddScoped<IBookstoreService, BookstoreService>();
         builder.Services.AddSingleton<IThirdPartyBookClient, MockThirdPartyBookClient>();
         return builder;
@@ -20,36 +19,30 @@ public static class DependencyInjection
 
     public static WebApplicationBuilder AddQuartzService(this WebApplicationBuilder builder)
     {
-        // 1) Registriraj sekciju "BookImport" u POCO BookImportSettings
         builder.Services.Configure<BookImportSettings>(
             builder.Configuration.GetSection("BookImport"));
 
-        // 2) Quartz konfiguracija: satni import job
         builder.Services.AddQuartz(q =>
         {
             var jobKey = new JobKey("BookImportJob", "ImportGroup");
 
-            // Registriraj sam job (durably = preživi bez trigggera)
             q.AddJob<BookImportJob>(opts => opts
                 .WithIdentity(jobKey)
                 .StoreDurably()
             );
 
-            // Trigger: svaki puni sat
             q.AddTrigger(opts => opts
                 .ForJob(jobKey)
                 .WithIdentity("BookImportTrigger", "ImportGroup")
-                .WithCronSchedule("0 0 * * * ?",   // quartz cron: sekunda, minuta, sat, dan…, ovdje = svaki puni sat
+                .WithCronSchedule("0 0 * * * ?",
                     cronOpts => cronOpts
                         .WithMisfireHandlingInstructionDoNothing()
                 )
             );
         });
 
-        // 3) Hosted service koji starta QuartzScheduler pri launchu
         builder.Services.AddQuartzHostedService(opts =>
         {
-            // pri shutdownu pričekaj da se jobovi dovrše
             opts.WaitForJobsToComplete = true;
         });
 
@@ -58,9 +51,6 @@ public static class DependencyInjection
 
     public static WebApplicationBuilder AddJwtAuthentication(this WebApplicationBuilder builder)
     {
-        // ──────────────────────────────────────────
-        // 1) mapiranje settings
-        // ──────────────────────────────────────────
         builder.Services.Configure<JwtSettings>(
             builder.Configuration.GetSection("JwtSettings")
         );
@@ -68,9 +58,6 @@ public static class DependencyInjection
             .GetSection("JwtSettings")
             .Get<JwtSettings>()!;
 
-        // ──────────────────────────────────────────
-        // 2) Authentication (JWT Bearer)
-        // ──────────────────────────────────────────
         builder.Services
             .AddAuthentication(options =>
             {
@@ -95,10 +82,6 @@ public static class DependencyInjection
                     ClockSkew = TimeSpan.Zero
                 };
             });
-
-        // ──────────────────────────────────────────
-        // 3) Authorization policies
-        // ──────────────────────────────────────────
 
         builder.Services.AddAuthorizationBuilder()
               .AddPolicy(AuthPolicies.RequireReadRole, policy =>

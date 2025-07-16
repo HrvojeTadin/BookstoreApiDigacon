@@ -15,10 +15,8 @@ public class BookImportJob(
     {
         _logger.LogInformation("BookImportJob starting (fuzzy threshold={Threshold})", _threshold);
 
-        // 1) Dohvati simulirane knjige
         var imported = await _client.FetchBooksAsync(100_000);
 
-        // 2) Pripremi postojeće naslove
         var incomingTitles = imported
             .Select(b => b.Title?.Trim())
             .Where(t => !string.IsNullOrWhiteSpace(t))
@@ -30,7 +28,6 @@ public class BookImportJob(
             .Select(b => b.Title!)
             .ToListAsync();
 
-        // 3) Fuzzy filtriranje
         var toAdd = new List<Book>();
         int skipFuzzy = 0;
 
@@ -55,7 +52,6 @@ public class BookImportJob(
 
         _logger.LogInformation("Skipped {SkipFuzzy} books due to fuzzy duplicates", skipFuzzy);
 
-        // 4) Batch uvoz
         const int batchSize = 2000;
         int totalBatches = (int)Math.Ceiling(toAdd.Count / (double)batchSize);
 
@@ -74,7 +70,6 @@ public class BookImportJob(
         _logger.LogInformation("BookImportJob finished; imported {ImportedCount} books", toAdd.Count);
     }
 
-    // Standardna Levenshtein implementacija
     public static int ComputeLevenshtein(string a, string b)
     {
         var dp = new int[a.Length + 1, b.Length + 1];
@@ -86,9 +81,9 @@ public class BookImportJob(
             {
                 int cost = a[i - 1] == b[j - 1] ? 0 : 1;
                 dp[i, j] = Math.Min(
-                    Math.Min(dp[i - 1, j] + 1,     // brisanje
-                             dp[i, j - 1] + 1),    // umetanje
-                    dp[i - 1, j - 1] + cost);    // zamjena
+                    Math.Min(dp[i - 1, j] + 1,
+                             dp[i, j - 1] + 1),
+                    dp[i - 1, j - 1] + cost);
             }
 
         return dp[a.Length, b.Length];

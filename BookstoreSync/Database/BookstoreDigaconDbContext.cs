@@ -26,12 +26,10 @@ public class BookstoreDigaconDbContext(DbContextOptions<BookstoreDigaconDbContex
             .Property(b => b.Price)
             .HasPrecision(18, 2);
 
-        // Review constraints
         modelBuilder.Entity<Review>()
             .Property(r => r.Rating)
             .IsRequired();
 
-        // Optional constraints
         modelBuilder.Entity<Author>()
             .Property(a => a.Name)
             .HasMaxLength(100)

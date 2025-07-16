@@ -43,10 +43,10 @@ public class BookstoreServiceTests
     }
 
     [Theory]
-    [InlineData("", 10, new[] { "A" }, new[] { "G" })] // missing title
-    [InlineData("T", 0, new[] { "A" }, new[] { "G" })] // invalid price
-    [InlineData("T", 10, new string[0], new[] { "G" })] // no authors
-    [InlineData("T", 10, new[] { "A" }, new string[0])] // no genres
+    [InlineData("", 10, new[] { "A" }, new[] { "G" })]
+    [InlineData("T", 0, new[] { "A" }, new[] { "G" })]
+    [InlineData("T", 10, new string[0], new[] { "G" })]
+    [InlineData("T", 10, new[] { "A" }, new string[0])]
     public async Task CreateBookAsync_Should_ThrowArgumentException_When_Invalid(
         string title,
         decimal price,
