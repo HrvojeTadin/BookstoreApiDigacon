@@ -1,35 +1,60 @@
-﻿@BookstoreApi_HostAddress = https://localhost:7014
+﻿@host = https://localhost:7014
+@token = 'put your token here'
 
-### ================================================
-### Tests for BookstoreApi
-### ================================================
+###############################################################################
+# 0. LOGIN AS READER (Read-only)
+###############################################################################
 
-### 1. Get all books
-GET {{BookstoreApi_HostAddress}}/api/books
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "reader",
+  "password": "reader123"
+}
+
+###############################################################################
+# 1. GET ALL BOOKS  (requires Read role)
+###############################################################################
+
+GET {{host}}/api/books
+Authorization: Bearer {{token}}
 Accept: application/json
 
-###
-
-### 2. Get book by id (valid)
-GET {{BookstoreApi_HostAddress}}/api/books/2
+### 2. GET BOOK BY ID (valid)
+GET {{host}}/api/books/1
+Authorization: Bearer {{token}}
 Accept: application/json
 
-###
-
-### 3. Get book by id (not found)
-GET {{BookstoreApi_HostAddress}}/api/books/9999
+### 3. GET BOOK BY ID (not found)
+GET {{host}}/api/books/9999
+Authorization: Bearer {{token}}
 Accept: application/json
 
-###
-
-### 4. Get top-10-rated-books
-GET {{BookstoreApi_HostAddress}}/api/books/top-10-rated-books
+### 4. GET TOP‑10‑RATED BOOKS
+GET {{host}}/api/books/top-10-rated-books
+Authorization: Bearer {{token}}
 Accept: application/json
 
-###
+###############################################################################
+# 5. LOGIN AS WRITER (ReadWrite)
+###############################################################################
 
-### 5. Create book (success, existing author & genre)
-POST {{BookstoreApi_HostAddress}}/api/books
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "writer",
+  "password": "writer123"
+}
+
+
+###############################################################################
+# 6. CREATE BOOK (success)
+###############################################################################
+
+POST {{host}}/api/books
+Authorization: Bearer {{writeToken}}
 Content-Type: application/json
 
 {
@@ -39,23 +64,12 @@ Content-Type: application/json
   "genreNames":  ["Existing Genre Name"]
 }
 
-###
+###############################################################################
+# 7. CREATE BOOK (validation error: missing title)
+###############################################################################
 
-### 6. Create book (success, new author & new genre)
-POST {{BookstoreApi_HostAddress}}/api/books
-Content-Type: application/json
-
-{
-  "title": "Novel Cross‑Project Patterns",
-  "price": 39.50,
-  "authorNames": ["Brand New Author"],
-  "genreNames":  ["Emerging Genre"]
-}
-
-###
-
-### 7. Create book (validation error: missing title)
-POST {{BookstoreApi_HostAddress}}/api/books
+POST {{host}}/api/books
+Authorization: Bearer {{writeToken}}
 Content-Type: application/json
 
 {
@@ -65,49 +79,41 @@ Content-Type: application/json
   "genreNames":  ["Some Genre"]
 }
 
-###
+###############################################################################
+# 8. UPDATE BOOK PRICE (success)
+###############################################################################
 
-### 8. Create book (validation error: no authors)
-POST {{BookstoreApi_HostAddress}}/api/books
-Content-Type: application/json
-
-{
-  "title": "No Authors Book",
-  "price": 19.99,
-  "authorNames": [],
-  "genreNames":  ["Fiction"]
-}
-
-###
-
-### 9. Update book price (success)
-PUT {{BookstoreApi_HostAddress}}/api/books/2/price
+PUT {{host}}/api/books/1/price
+Authorization: Bearer {{writeToken}}
 Content-Type: application/json
 
 {
   "newPrice": 77.99
 }
 
-###
-
-### Verify update with GET
-GET {{BookstoreApi_HostAddress}}/api/books/2
+### Verify update  
+GET {{host}}/api/books/1
+Authorization: Bearer {{token}}
 Accept: application/json
 
-###
+###############################################################################
+# 9. UPDATE BOOK PRICE (validation error: negative price)
+###############################################################################
 
-### 10. Update book price (validation error: negative price)
-PUT {{BookstoreApi_HostAddress}}/api/books/1/price
+PUT {{host}}/api/books/1/price
+Authorization: Bearer {{writeToken}}
 Content-Type: application/json
 
 {
   "newPrice": -5
 }
 
-###
+###############################################################################
+# 10. UPDATE BOOK PRICE (not found)
+###############################################################################
 
-### 11. Update book price (not found)
-PUT {{BookstoreApi_HostAddress}}/api/books/9999/price
+PUT {{host}}/api/books/9999/price
+Authorization: Bearer {{writeToken}}
 Content-Type: application/json
 
 {
