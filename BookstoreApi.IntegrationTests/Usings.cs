@@ -1,0 +1,14 @@
+﻿global using BookstoreApi.DTOs;
+global using BookstoreSync.Database;
+global using BookstoreSync.Entities;
+global using Microsoft.AspNetCore.Authentication;
+global using Microsoft.AspNetCore.Mvc.Testing;
+global using Microsoft.Data.Sqlite;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.DependencyInjection.Extensions;
+global using Microsoft.Extensions.Options;
+global using System.Net;
+global using System.Net.Http.Headers;
+global using System.Reflection;
+global using System.Security.Claims;
+global using System.Text.Encodings.Web;

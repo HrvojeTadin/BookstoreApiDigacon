@@ -1,0 +1,115 @@
+﻿@BookstoreApi_HostAddress = https://localhost:7014
+
+### ================================================
+### Tests for BookstoreApi
+### ================================================
+
+### 1. Get all books
+GET {{BookstoreApi_HostAddress}}/api/books
+Accept: application/json
+
+###
+
+### 2. Get book by id (valid)
+GET {{BookstoreApi_HostAddress}}/api/books/2
+Accept: application/json
+
+###
+
+### 3. Get book by id (not found)
+GET {{BookstoreApi_HostAddress}}/api/books/9999
+Accept: application/json
+
+###
+
+### 4. Get top-10-rated-books
+GET {{BookstoreApi_HostAddress}}/api/books/top-10-rated-books
+Accept: application/json
+
+###
+
+### 5. Create book (success, existing author & genre)
+POST {{BookstoreApi_HostAddress}}/api/books
+Content-Type: application/json
+
+{
+  "title": "Automated Testing Guide",
+  "price": 29.99,
+  "authorNames": ["Existing Author Name"],
+  "genreNames":  ["Existing Genre Name"]
+}
+
+###
+
+### 6. Create book (success, new author & new genre)
+POST {{BookstoreApi_HostAddress}}/api/books
+Content-Type: application/json
+
+{
+  "title": "Novel Cross‑Project Patterns",
+  "price": 39.50,
+  "authorNames": ["Brand New Author"],
+  "genreNames":  ["Emerging Genre"]
+}
+
+###
+
+### 7. Create book (validation error: missing title)
+POST {{BookstoreApi_HostAddress}}/api/books
+Content-Type: application/json
+
+{
+  "title": "",
+  "price": 19.99,
+  "authorNames": ["Some Author"],
+  "genreNames":  ["Some Genre"]
+}
+
+###
+
+### 8. Create book (validation error: no authors)
+POST {{BookstoreApi_HostAddress}}/api/books
+Content-Type: application/json
+
+{
+  "title": "No Authors Book",
+  "price": 19.99,
+  "authorNames": [],
+  "genreNames":  ["Fiction"]
+}
+
+###
+
+### 9. Update book price (success)
+PUT {{BookstoreApi_HostAddress}}/api/books/2/price
+Content-Type: application/json
+
+{
+  "newPrice": 77.99
+}
+
+###
+
+### Verify update with GET
+GET {{BookstoreApi_HostAddress}}/api/books/2
+Accept: application/json
+
+###
+
+### 10. Update book price (validation error: negative price)
+PUT {{BookstoreApi_HostAddress}}/api/books/1/price
+Content-Type: application/json
+
+{
+  "newPrice": -5
+}
+
+###
+
+### 11. Update book price (not found)
+PUT {{BookstoreApi_HostAddress}}/api/books/9999/price
+Content-Type: application/json
+
+{
+  "newPrice": 19.99
+}

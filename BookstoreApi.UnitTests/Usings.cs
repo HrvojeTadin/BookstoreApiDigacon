@@ -1,0 +1,11 @@
+﻿global using BookstoreApi.Controllers;
+global using BookstoreApi.DTOs;
+global using BookstoreApi.Services;
+global using BookstoreSync.Database;
+global using BookstoreSync.Entities;
+global using BookstoreSync.Jobs;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Logging.Abstractions;
+global using Microsoft.Extensions.Options;
+global using System.Text.Json;
